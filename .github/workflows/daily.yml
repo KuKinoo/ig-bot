@@ -29,6 +29,7 @@ jobs:
       INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
       # Optional tuning - add as repository *variables* (Settings > Secrets and variables > Actions > Variables)
       GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
       GEMINI_FALLBACK_MODEL: ${{ vars.GEMINI_FALLBACK_MODEL }}
@@ -39,6 +40,11 @@ jobs:
       BRAND_ACCENT: ${{ vars.BRAND_ACCENT }}
       RSS_FEEDS: ${{ vars.RSS_FEEDS }}
       MAX_SLIDE_IMAGES: ${{ vars.MAX_SLIDE_IMAGES }}
+      UNSPLASH_APP_NAME: ${{ vars.UNSPLASH_APP_NAME }}
+      PHOTO_CANDIDATES: ${{ vars.PHOTO_CANDIDATES }}
+      PHOTO_POOL: ${{ vars.PHOTO_POOL }}
+      MAX_PHOTO_EDITS: ${{ vars.MAX_PHOTO_EDITS }}
+      REALISTIC_STYLE: ${{ vars.REALISTIC_STYLE }}
     steps:
       - uses: actions/checkout@v4
 
