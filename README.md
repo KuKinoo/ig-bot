@@ -10,7 +10,7 @@ Every day it reads AI/tech news feeds, lets **Gemini** write the caption and sli
 | Catching Telegram button taps | Cloudflare Worker (`worker/worker.js`) | free |
 | State + draft images | `data` branch of this repo | free |
 | Caption / slide text | Google Gemini API (free tier) | free |
-| Background images | Cloudflare Workers AI – FLUX schnell (10,000 neurons/day) | free |
+| Background images | Unsplash photos (free API key), Cloudflare Workers AI – FLUX schnell (10,000 neurons/day) as fallback | free |
 
 ## How it works
 
@@ -58,6 +58,18 @@ The complete illustrated, step-by-step manual (about 30 pages — architecture, 
    ```
    (`WEBHOOK_SECRET`: letters, digits, `_`, `-` only. Do not type the angle brackets.)
 6. **Test** – send `/status` to the bot, then *Actions → Daily draft → Run workflow*.
+
+## Real photos from Unsplash (optional, free)
+
+With an `UNSPLASH_ACCESS_KEY` secret the bot illustrates posts with real photos:
+
+1. Gemini writes one photo search query per slide; the bot fetches portrait candidates from Unsplash.
+2. Gemini **looks at the candidates** and decides per slide: use as is, colour-grade, lightly AI-edit (img2img), or — if nothing fits — generate an AI picture instead (realistic style). No photo, no AI key: designed gradient.
+3. In Telegram, tap **🖼 n** under the preview to see other candidates for picture *n* and pick one yourself (**More photos**, **🤖 AI image**, **🎨 Plain design** are there too). Nothing is published without your tap.
+
+Guideline compliance (Unsplash API Guidelines): images are loaded from the URLs the API returns (`photo.urls`, only resized with supported parameters, `ixid` kept); each photo that goes into a published post is reported to `photo.links.download_location` on approval; the caption gets a photographer + Unsplash credit with `?utm_source=<UNSPLASH_APP_NAME>&utm_medium=referral` links and the slide shows a small "Photo: name / Unsplash" line. A demo key allows 50 API requests/hour (a draft uses about 5-8); the client stops before the limit.
+
+Things to know: AI-edited photos are AI-generated content, so Instagram may ask for an "AI info" label; the free Cloudflare img2img model is low-resolution, so edits are rare (`MAX_PHOTO_EDITS`, default 2); never imply a photographer or person shown endorses the story. Variables: `UNSPLASH_APP_NAME`, `PHOTO_CANDIDATES`, `PHOTO_POOL`, `MAX_PHOTO_EDITS`, `REALISTIC_STYLE`.
 
 ## Configuration (optional repository *Variables*)
 

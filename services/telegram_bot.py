@@ -7,7 +7,7 @@ import logging
 import requests
 
 from config import settings
-from services import gitsync, pipeline, storage
+from services import gitsync, photos, pipeline, storage
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,8 @@ def _call(method: str, data: dict | None = None, files: dict | None = None) -> d
     return payload["result"]
 
 
-def _say(text: str, reply_markup: dict | None = None) -> None:
+def _say(text: str, reply_markup: dict | None = None) -> int | None:
+    """Send a text message; returns its message id."""
     data = {
         "chat_id": settings.telegram_chat_id,
         "text": text[:4000],
@@ -35,16 +36,21 @@ def _say(text: str, reply_markup: dict | None = None) -> None:
     }
     if reply_markup:
         data["reply_markup"] = json.dumps(reply_markup)
-    _call("sendMessage", data)
+    return _call("sendMessage", data).get("message_id")
 
 
-def _keyboard(draft_id: str) -> dict:
-    return {
-        "inline_keyboard": [[
-            {"text": "✅ Approve & Publish", "callback_data": f"approve:{draft_id}"},
-            {"text": "❌ Reject / Edit", "callback_data": f"reject:{draft_id}"},
-        ]]
-    }
+def _keyboard(draft: dict) -> dict:
+    draft_id = draft["id"]
+    rows = [[
+        {"text": "✅ Approve & Publish", "callback_data": f"approve:{draft_id}"},
+        {"text": "❌ Reject / Edit", "callback_data": f"reject:{draft_id}"},
+    ]]
+    slots = draft.get("slots") or []
+    if photos.enabled() and slots:  # one button per picture opens the photo picker for it
+        label = "🖼 Change photo" if len(slots) == 1 else "🖼 {}"
+        rows.append([{"text": label.format(i + 1), "callback_data": f"swap:{draft_id}:{i}:0"}
+                     for i in range(len(slots))])
+    return {"inline_keyboard": rows}
 
 
 def _remove_buttons(message_id: int) -> None:
@@ -61,6 +67,8 @@ def _remove_buttons(message_id: int) -> None:
 # --------------------------------------------------------------------------- preview
 def send_preview(draft: dict) -> None:
     """Send image(s) + caption + inline keyboard to the approver."""
+    if draft.get("kb_msg"):  # older preview of this draft: its buttons must not stay active
+        _remove_buttons(draft["kb_msg"])
     folder = settings.media_dir / draft["id"]
     paths = [folder / f for f in draft["image_files"]]
     chat = {"chat_id": settings.telegram_chat_id}
@@ -74,8 +82,55 @@ def send_preview(draft: dict) -> None:
     post, art = draft["post"], draft["article"]
     header = f"🆕 Draft v{draft['revision']} · {post['post_type']}" + (
         f" ({len(paths)} slides)" if len(paths) > 1 else "")
-    text = f"{header}\n\n{post['caption']}\n\n— — —\nArticle: {art['title']}\n{art['url']}"
-    _say(text, reply_markup=_keyboard(draft["id"]))
+    pictures = pipeline.describe_pictures(draft)
+    pics = ("\n\nPictures:\n" + "\n".join(pictures) + "\nTap 🖼 to swap a photo.") if pictures and photos.enabled() else ""
+    text = f"{header}{pics}\n\n{pipeline.caption_for(draft)}\n\n— — —\nArticle: {art['title']}\n{art['url']}"
+    draft["kb_msg"] = _say(text, reply_markup=_keyboard(draft))
+    storage.save_draft(draft)
+
+
+PAGE = 4
+
+
+def _send_candidates(chat: dict, shown: list[dict]) -> None:
+    """Show candidate thumbnails. Telegram fetches the hotlinked Unsplash URLs itself; upload as a fallback."""
+    captions = [f"{n}. {c['author']}" for n, c in enumerate(shown, 1)]
+    if len(shown) == 1:
+        try:
+            _call("sendPhoto", {**chat, "photo": shown[0]["thumb"], "caption": captions[0]})
+        except RuntimeError:
+            _call("sendPhoto", {**chat, "caption": captions[0]},
+                  files={"photo": ("c1.jpg", photos.fetch_thumb(shown[0]), "image/jpeg")})
+        return
+    media = [{"type": "photo", "media": c["thumb"], "caption": cap} for c, cap in zip(shown, captions)]
+    try:
+        _call("sendMediaGroup", {**chat, "media": json.dumps(media)})
+    except RuntimeError as exc:
+        logger.warning("Telegram could not fetch the thumbnails by URL (%s); uploading them", exc)
+        files = {f"f{i}": (f"c{i}.jpg", photos.fetch_thumb(c), "image/jpeg") for i, c in enumerate(shown)}
+        media = [{"type": "photo", "media": f"attach://f{i}", "caption": cap} for i, cap in enumerate(captions)]
+        _call("sendMediaGroup", {**chat, "media": json.dumps(media)}, files=files)
+
+
+def _send_picker(draft: dict, slide: int, page: int) -> None:
+    slot = draft["slots"][slide]
+    order = [k for k in range(len(slot["candidates"])) if not (slot["mode"] == "photo" and k == slot["choice"])]
+    chunk = order[page * PAGE:(page + 1) * PAGE]
+    did = draft["id"]
+    rows: list[list[dict]] = []
+    if chunk:
+        _send_candidates({"chat_id": settings.telegram_chat_id}, [slot["candidates"][k] for k in chunk])
+        rows.append([{"text": f"Use {n}", "callback_data": f"use:{did}:{slide}:{k}"}
+                     for n, k in enumerate(chunk, 1)])
+        if len(order) > (page + 1) * PAGE:
+            rows.append([{"text": "More photos ▶", "callback_data": f"swap:{did}:{slide}:{page + 1}"}])
+        text = f"Picture {slide + 1}: tap the photo you want ('{slot['query']}')."
+    else:
+        text = f"Picture {slide + 1}: no more photos for '{slot['query']}'."
+    rows.append([{"text": "🤖 AI image", "callback_data": f"ai:{did}:{slide}"},
+                 {"text": "🎨 Plain design", "callback_data": f"design:{did}:{slide}"}])
+    rows.append([{"text": "✖ Close", "callback_data": f"close:{did}"}])
+    _say(text, reply_markup={"inline_keyboard": rows})
 
 
 def deliver_new_draft() -> None:
@@ -138,9 +193,15 @@ def _on_button(query: dict) -> None:
     message = query.get("message") or {}
     if str(message.get("chat", {}).get("id")) != str(settings.telegram_chat_id):
         return  # not the approver
-    action, _, draft_id = (query.get("data") or "").partition(":")
-    if message.get("message_id"):
+    parts = (query.get("data") or "").split(":")
+    action, draft_id = parts[0], (parts[1] if len(parts) > 1 else "")
+    args = parts[2:]
+    # The main preview keeps its buttons while you browse photos; every other tap is one-shot.
+    first_picker_open = action == "swap" and args[-1:] == ["0"]
+    if message.get("message_id") and not first_picker_open:
         _remove_buttons(message["message_id"])  # one tap only; failed publishes re-send the keyboard
+    if action == "close":
+        return
 
     draft = storage.get_draft(draft_id)
     if not draft or draft["status"] != "pending":
@@ -154,7 +215,7 @@ def _on_button(query: dict) -> None:
         except Exception as exc:  # noqa: BLE001
             logger.exception("Publish failed")
             _say(f"❌ Publishing failed: {exc}\n\nThe draft is still pending – tap Approve to retry.",
-                 reply_markup=_keyboard(draft_id))
+                 reply_markup=_keyboard(draft))
             return
         gitsync.push(f"published {draft_id}")  # save "published" at once so it can never be posted twice
         _say(f"✅ Published!\n{permalink}")
@@ -162,6 +223,32 @@ def _on_button(query: dict) -> None:
         storage.set_awaiting_feedback(draft_id)
         _say("✍️ What should change? Reply with your feedback (tone, angle, length, hashtags, "
              "slide wording, image style…). Send /cancel to drop it.")
+    elif action in ("swap", "use", "ai", "design"):
+        _on_picture_action(draft, action, args)
+
+
+def _on_picture_action(draft: dict, action: str, args: list[str]) -> None:
+    try:
+        slide = int(args[0])
+        if action == "swap":
+            _send_picker(draft, slide, int(args[1]) if len(args) > 1 else 0)
+            return
+        _say("🔄 Re-rendering that picture…")
+        if action == "use":
+            new = pipeline.use_photo(draft["id"], slide, int(args[1]))
+        elif action == "ai":
+            new = pipeline.use_ai_image(draft["id"], slide)
+        else:
+            new = pipeline.use_design(draft["id"], slide)
+    except (ValueError, IndexError, KeyError):
+        _say("That button is out of date.")
+        return
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Picture change failed")
+        _say(f"⚠️ Could not change the picture: {exc}")
+        return
+    gitsync.push(f"photo change {new['id']}")  # new image must be public before the approver can tap Approve
+    send_preview(new)
 
 
 def _on_message(message: dict) -> None:

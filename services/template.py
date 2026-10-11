@@ -188,8 +188,15 @@ def _pill(draw, x: int, y: int, text: str) -> int:
     return h
 
 
+def _credit(draw, credit: str) -> None:
+    """Small photographer credit (Unsplash attribution) in the bottom-left corner."""
+    if credit:
+        _text(draw, (MARGIN, H - 50), _short(credit, 60), font(20, "regular"), (255, 255, 255, 170))
+
+
 # ----------------------------------------------------------------------------- layouts
-def render_cover(bg: Image.Image, title: str, subtitle: str, index: int, total: int, topic: str = "") -> Image.Image:
+def render_cover(bg: Image.Image, title: str, subtitle: str, index: int, total: int, topic: str = "",
+                 credit: str = "") -> Image.Image:
     img = fit_cover(bg)
     _scrim(img, 90, 238)
     draw = ImageDraw.Draw(img, "RGBA")
@@ -217,10 +224,12 @@ def render_cover(bg: Image.Image, title: str, subtitle: str, index: int, total: 
         _text(draw, (MARGIN, y), line, sf, (255, 255, 255, 215))
         y += slh
     _footer(draw, index, total, settings.brand_handle, swipe=total > 1)
+    _credit(draw, credit)
     return img
 
 
-def render_content(bg: Image.Image, number: int, title: str, body: str, index: int, total: int) -> Image.Image:
+def render_content(bg: Image.Image, number: int, title: str, body: str, index: int, total: int,
+                   credit: str = "") -> Image.Image:
     img = fit_cover(bg)
     _scrim(img, 125, 215)
     draw = ImageDraw.Draw(img, "RGBA")
@@ -253,10 +262,12 @@ def render_content(bg: Image.Image, number: int, title: str, body: str, index: i
             _text(draw, (MARGIN + pad, y), line, bf, (255, 255, 255, 215))
             y += blh
     _footer(draw, index, total, settings.brand_handle)
+    _credit(draw, credit)
     return img
 
 
-def render_cta(bg: Image.Image, title: str, body: str, index: int, total: int, source: str = "") -> Image.Image:
+def render_cta(bg: Image.Image, title: str, body: str, index: int, total: int, source: str = "",
+               credit: str = "") -> Image.Image:
     img = fit_cover(bg)
     _scrim(img, 150, 232)
     draw = ImageDraw.Draw(img, "RGBA")
@@ -293,10 +304,12 @@ def render_cta(bg: Image.Image, title: str, body: str, index: int, total: int, s
     _text(draw, ((W - _tw(draw, hint, hf, 4)) / 2, y), hint, hf, (255, 255, 255, 190), tracking=4)
 
     _footer(draw, index, total, f"Source: {_short(source, 48)}" if source else "")
+    _credit(draw, credit)
     return img
 
 
-def render_single(bg: Image.Image, headline: str, source: str = "", topic: str = "") -> Image.Image:
+def render_single(bg: Image.Image, headline: str, source: str = "", topic: str = "",
+                  credit: str = "") -> Image.Image:
     img = fit_cover(bg)
     _scrim(img, 45, 228)
     draw = ImageDraw.Draw(img, "RGBA")
@@ -316,22 +329,25 @@ def render_single(bg: Image.Image, headline: str, source: str = "", topic: str =
         y += tlh
     left = f"Source: {_short(source, 48)}" if source else settings.brand_handle
     _footer(draw, 1, 1, left)
+    _credit(draw, credit)
     return img
 
 
-def render_carousel(backgrounds: list[Image.Image], post: dict, article: dict) -> list[Image.Image]:
+def render_slide(i: int, n: int, bg: Image.Image, post: dict, article: dict, credit: str = "") -> Image.Image:
+    """Slide number `i` (1-based) of an `n`-slide carousel."""
     titles = post["slides_text"]
     bodies = list(post.get("slides_body") or [])
-    n = len(titles)
-    source = article.get("source", "")
-    out = []
-    for i, title in enumerate(titles, 1):
-        body = bodies[i - 1] if i - 1 < len(bodies) else ""
-        bg = backgrounds[i - 1]
-        if i == 1:
-            out.append(render_cover(bg, title, body, i, n, post.get("topic", "")))
-        elif i == n and n >= 3:
-            out.append(render_cta(bg, title, body, i, n, source))
-        else:
-            out.append(render_content(bg, i - 1, title, body, i, n))
-    return out
+    title = titles[i - 1]
+    body = bodies[i - 1] if i - 1 < len(bodies) else ""
+    if i == 1:
+        return render_cover(bg, title, body, i, n, post.get("topic", ""), credit)
+    if i == n and n >= 3:
+        return render_cta(bg, title, body, i, n, article.get("source", ""), credit)
+    return render_content(bg, i - 1, title, body, i, n, credit)
+
+
+def render_carousel(backgrounds: list[Image.Image], post: dict, article: dict,
+                    credits: list[str] | None = None) -> list[Image.Image]:
+    n = len(post["slides_text"])
+    credits = list(credits or []) + [""] * n
+    return [render_slide(i, n, backgrounds[i - 1], post, article, credits[i - 1]) for i in range(1, n + 1)]

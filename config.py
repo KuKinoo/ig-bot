@@ -55,6 +55,26 @@ class Settings:
     cloudflare_image_model: str = field(
         default_factory=lambda: _env("CLOUDFLARE_IMAGE_MODEL", "@cf/black-forest-labs/flux-1-schnell")
     )
+    # --- Real photos (Unsplash) -------------------------------------------------
+    # Free "Access Key" from https://unsplash.com/oauth/applications. Empty = photo mode off (AI images only).
+    unsplash_access_key: str = field(default_factory=lambda: _env("UNSPLASH_ACCESS_KEY"))
+    # Name of YOUR app as registered at Unsplash. Used in the required ?utm_source=<name>&utm_medium=referral links.
+    # Unsplash forbids "Unsplash" inside an app name.
+    unsplash_app_name: str = field(default_factory=lambda: _env("UNSPLASH_APP_NAME", "ai-influencer-bot"))
+    # Candidates the AI looks at per slide, and how many are kept so you can swap without new API calls.
+    photo_candidates: int = field(default_factory=lambda: _int("PHOTO_CANDIDATES", 4))
+    photo_pool: int = field(default_factory=lambda: _int("PHOTO_POOL", 8))
+    # Generative edits of a real photo (img2img) are slow and low-res on free models -> keep them rare.
+    max_photo_edits: int = field(default_factory=lambda: _int("MAX_PHOTO_EDITS", 2))
+    # Style for AI pictures that fill in when no photo fits (only used while Unsplash is enabled).
+    realistic_style: str = field(
+        default_factory=lambda: _env(
+            "REALISTIC_STYLE",
+            "realistic documentary photograph, natural light, shallow depth of field, muted colours, "
+            "35mm photo, high detail",
+        )
+    )
+
     # --- Visual template / branding ----------------------------------------
     brand_handle: str = field(default_factory=lambda: _env("BRAND_HANDLE"))            # e.g. @yourname
     brand_kicker: str = field(default_factory=lambda: _env("BRAND_KICKER", "AI & TECH DAILY"))
@@ -97,6 +117,10 @@ class Settings:
         if self.cloudflare_account_id and self.cloudflare_api_token:
             return "cloudflare"
         return "gemini"
+
+    @property
+    def photos_enabled(self) -> bool:
+        return bool(self.unsplash_access_key)
 
     @property
     def media_dir(self) -> Path:

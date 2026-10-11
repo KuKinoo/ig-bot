@@ -1,0 +1,64 @@
+name: Telegram update
+
+# Triggered by the Cloudflare Worker (repository_dispatch) whenever you message the bot or tap a button.
+on:
+  repository_dispatch:
+    types: [telegram_update]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bot-state
+  cancel-in-progress: false
+
+jobs:
+  handle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITSYNC: "1"
+      DATA_DIR: data
+      TELEGRAM_UPDATE: ${{ github.event.client_payload.update }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+      GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
+      GEMINI_FALLBACK_MODEL: ${{ vars.GEMINI_FALLBACK_MODEL }}
+      IMAGE_PROVIDER: ${{ vars.IMAGE_PROVIDER }}
+      IMAGE_STYLE: ${{ vars.IMAGE_STYLE }}
+      BRAND_HANDLE: ${{ vars.BRAND_HANDLE }}
+      BRAND_KICKER: ${{ vars.BRAND_KICKER }}
+      BRAND_ACCENT: ${{ vars.BRAND_ACCENT }}
+      RSS_FEEDS: ${{ vars.RSS_FEEDS }}
+      MAX_SLIDE_IMAGES: ${{ vars.MAX_SLIDE_IMAGES }}
+      UNSPLASH_APP_NAME: ${{ vars.UNSPLASH_APP_NAME }}
+      PHOTO_CANDIDATES: ${{ vars.PHOTO_CANDIDATES }}
+      PHOTO_POOL: ${{ vars.PHOTO_POOL }}
+      MAX_PHOTO_EDITS: ${{ vars.MAX_PHOTO_EDITS }}
+      REALISTIC_STYLE: ${{ vars.REALISTIC_STYLE }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Load state from the data branch
+        run: bash scripts/data_branch.sh pull
+
+      - name: Process the Telegram update
+        run: python handle_update.py
+
+      - name: Save state
+        if: always()
+        run: bash scripts/data_branch.sh push "telegram update"

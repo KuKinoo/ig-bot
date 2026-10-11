@@ -30,9 +30,10 @@ slides); otherwise "single".
 STRICT OUTPUT RULES
 - Respond with ONE valid JSON object and nothing else - no markdown fences, no commentary.
 - Keys exactly: source_index (int), post_type ("single" | "carousel"), caption (string), headline (string), \
-topic (string), slides_text (array), slides_body (array), image_prompt (string), slide_image_prompts (array).
-- caption: strong hook in the first line, 2-4 short paragraphs, 5-8 relevant hashtags at the end, under 1800 \
-characters. It MUST end with a source credit line in this form: \
+topic (string), slides_text (array), slides_body (array), image_prompt (string), slide_image_prompts (array), \
+photo_queries (array).
+- caption: strong hook in the first line, 2-4 short paragraphs, 5-8 relevant hashtags at the end, under 1300 \
+characters (photo credits are added after it). It MUST end with a source credit line in this form: \
 "📰 Source: <Outlet> (by <Author>) - <article URL>". Use the exact URL provided.
 - topic: the main subject of the story as a short label, max 4 words, plain text, no emojis, e.g. \
 "CLAUDE · ANTHROPIC", "OPENAI SORA", "NVIDIA BLACKWELL". It is printed on the post graphic.
@@ -52,9 +53,16 @@ that slide's point, all in one consistent visual style.
 actually says. In 25-45 words name the specific subject matter of the story (e.g. a coding assistant, a data \
 center, a robot arm, a medical scan, a chip), plus setting, action and mood. Show the CONCEPT, never the \
 brand: NO logos, NO product screenshots or app interfaces, NO readable text or letters, NO real people's \
-faces. Example for a story about an AI coding assistant: "A glowing translucent assistant orb hovering beside \
-a developer's laptop, code fragments floating in the air, dark workspace, soft cyan light". \
+faces. Example for a story about an AI coding assistant: "A developer's laptop on a dark desk at night, lines of \
+code glowing on the screen, reflections on glasses, soft cyan light". \
 image_prompt is the cover/main picture; vertical 4:5.
+- PHOTO QUERIES (photo_queries): real stock photos from Unsplash illustrate the post, so give ONE search query per \
+picture - one per slide for a carousel (same length as slides_text), exactly ONE for a single post. Each query is \
+2-4 plain English words naming a concrete, photographable subject (e.g. "server room corridor", "robot hand \
+close up", "developer laptop night"). Turn abstract ideas into physical objects or scenes. No brand names, no \
+people's names, no abstract words like "innovation". Make the queries differ from slide to slide.
+- The image prompts are only a FALLBACK for slides where no real photo fits, so write them as realistic \
+photographic scenes (no illustration or 3D-render look).
 - When editor feedback is supplied, apply it faithfully while keeping all rules above."""
 
 
@@ -68,6 +76,7 @@ class GeneratedPost(BaseModel):
     slides_body: list[str]
     image_prompt: str
     slide_image_prompts: list[str]
+    photo_queries: list[str] = Field(default_factory=list)
 
 
 @lru_cache(maxsize=1)
@@ -122,6 +131,15 @@ def _normalise(raw: GeneratedPost, articles: list[dict]) -> dict:
     if post_type != "carousel":
         post_type, slides, slides_body, slide_prompts = "single", [], [], []
 
+    n_pics = len(slides) if post_type == "carousel" else 1
+    fallback_q = " ".join(raw.topic.split()[:3]).lower() or "technology"
+    if post_type == "carousel" and len(raw.photo_queries) == len(titles):  # keep alignment with kept slides
+        queries = [raw.photo_queries[i].strip() for i in keep]
+    else:
+        queries = [q.strip() for q in raw.photo_queries]
+    queries = [q or fallback_q for q in queries]
+    queries = (queries + [fallback_q] * n_pics)[:n_pics]
+
     caption = raw.caption.strip()
     credit = f"\n\n📰 Source: {article['source']} (by {article['author']}) - {article['url']}"
     if article["url"] not in caption or len(caption) > MAX_CAPTION:
@@ -148,6 +166,7 @@ def _normalise(raw: GeneratedPost, articles: list[dict]) -> dict:
         "slides_body": slides_body,
         "image_prompt": raw.image_prompt.strip(),
         "slide_image_prompts": slide_prompts,
+        "photo_queries": queries,
         "source_index": idx + 1,
         "article": article,
     }
@@ -170,6 +189,27 @@ def _is_permanent(exc: Exception) -> bool:
     return isinstance(code, int) and 400 <= code < 500 and code != 429
 
 
+def _run(contents, config: "types.GenerateContentConfig", parse):
+    """Call Gemini with retries/fallback model; `parse(response_text)` validates the answer."""
+    models = [settings.gemini_text_model]
+    if settings.gemini_fallback_model and settings.gemini_fallback_model not in models:
+        models.append(settings.gemini_fallback_model)
+
+    last_exc: Exception | None = None
+    for model in models:
+        for attempt in range(len(RETRY_DELAYS) + 1):
+            try:
+                resp = get_client().models.generate_content(model=model, contents=contents, config=config)
+                return parse(resp.text)
+            except Exception as exc:  # noqa: BLE001
+                last_exc = exc
+                logger.warning("Gemini %s attempt %d failed: %s", model, attempt + 1, exc)
+                if _is_permanent(exc) or attempt == len(RETRY_DELAYS):
+                    break
+                time.sleep(RETRY_DELAYS[attempt] if _is_temporary(exc) else 2)
+    raise RuntimeError(f"Gemini failed: {last_exc}")
+
+
 def generate_post(articles: list[dict], feedback: str | None = None, previous: dict | None = None) -> dict:
     """Generate a validated post dict.
 
@@ -185,22 +225,67 @@ def generate_post(articles: list[dict], feedback: str | None = None, previous: d
         response_schema=GeneratedPost,
         temperature=0.8,
     )
+    return _run(prompt, config, lambda text: _normalise(GeneratedPost.model_validate(_parse_json(text)), articles))
 
-    models = [settings.gemini_text_model]
-    if settings.gemini_fallback_model and settings.gemini_fallback_model not in models:
-        models.append(settings.gemini_fallback_model)
 
-    last_exc: Exception | None = None
-    for model in models:
-        for attempt in range(len(RETRY_DELAYS) + 1):
-            try:
-                resp = get_client().models.generate_content(model=model, contents=prompt, config=config)
-                raw = GeneratedPost.model_validate(_parse_json(resp.text))
-                return _normalise(raw, articles)
-            except Exception as exc:  # noqa: BLE001
-                last_exc = exc
-                logger.warning("Gemini %s attempt %d failed: %s", model, attempt + 1, exc)
-                if _is_permanent(exc) or attempt == len(RETRY_DELAYS):
-                    break
-                time.sleep(RETRY_DELAYS[attempt] if _is_temporary(exc) else 2)
-    raise RuntimeError(f"Gemini failed: {last_exc}")
+# --------------------------------------------------------------------------- photo selection (vision)
+PHOTO_SYSTEM_PROMPT = """You are the photo editor of an AI/tech Instagram account. For every slide you get the slide's \
+message and a few candidate stock photos (Unsplash). Decide what to do per slide, judging what the READER will \
+see once the photo sits behind the slide text.
+
+ACTIONS
+- "use": a candidate clearly fits the slide's message (literally or as a believable symbol). Crop only.
+- "grade": a candidate fits but its colours clash with the rest of the post; also set `grade` to one of \
+warm, cool, dark, mono, vivid (dark = calmer, good under lots of text).
+- "edit": a candidate is almost right and ONE small generative change would fix it (remove a distracting \
+element, change the mood or time of day). Put the full desired photographic scene in `edit_prompt` (15-30 \
+words, realistic, keep composition). Use sparingly - only when it truly adds value.
+- "ai": no candidate fits the message. A fresh AI picture will be generated instead.
+
+RULES
+- `candidate` is the 1-based number of the chosen candidate of THAT slide (0 only for "ai").
+- A photo that is off-topic, cluttered, low-quality, or shows a recognisable brand logo, readable text, \
+or an identifiable person that could imply endorsement or a false claim counts as NOT fitting.
+- Be honest: if nothing is a good match choose "ai" rather than forcing a weak photo. A stock photo that is only \
+loosely related is fine for generic points, but never for a specific claim it would misrepresent.
+- Keep one consistent look across a carousel (use `grade` for that when needed) and do not repeat a photo.
+- Respond with ONE JSON object: {"decisions": [{"slide": int, "action": str, "candidate": int, "grade": str, \
+"edit_prompt": str}]} with exactly one entry per slide, in order. grade is "none" unless action is "grade"."""
+
+
+class PhotoDecision(BaseModel):
+    slide: int
+    action: str
+    candidate: int = 0
+    grade: str = "none"
+    edit_prompt: str = ""
+
+
+class PhotoDecisions(BaseModel):
+    decisions: list[PhotoDecision]
+
+
+def choose_photos(post: dict, slides: list[dict]) -> list[PhotoDecision]:
+    """Look at the candidate photos of every slide and decide use / grade / edit / ai.
+
+    `slides` items: {"title", "body", "candidates": [{"alt", "thumb_bytes"}]}. Raises RuntimeError on failure.
+    """
+    parts: list = [types.Part.from_text(text=(
+        f"Post topic: {post.get('topic', '')}\nHeadline: {post.get('headline', '')}\n"
+        f"Style of the post graphics: white text on a dark gradient over the photo.\n"))]
+    for i, slide in enumerate(slides, 1):
+        parts.append(types.Part.from_text(text=(
+            f"\n=== SLIDE {i} ===\nMessage: {slide['title']} - {slide['body']}".rstrip(" -")
+            + f"\nSearch query used: {slide['query']}\n")))
+        if not slide["candidates"]:
+            parts.append(types.Part.from_text(text="(no candidate photos found -> choose \"ai\")\n"))
+        for k, cand in enumerate(slide["candidates"], 1):
+            parts.append(types.Part.from_text(text=f"Candidate {k} (alt text: {cand['alt'] or 'none'}):"))
+            parts.append(types.Part.from_bytes(data=cand["thumb_bytes"], mime_type="image/jpeg"))
+    config = types.GenerateContentConfig(
+        system_instruction=PHOTO_SYSTEM_PROMPT,
+        response_mime_type="application/json",
+        response_schema=PhotoDecisions,
+        temperature=0.3,
+    )
+    return _run(parts, config, lambda text: PhotoDecisions.model_validate(_parse_json(text)).decisions)
