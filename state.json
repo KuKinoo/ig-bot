@@ -1,0 +1,230 @@
+{
+  "seen_urls": [
+    "https://www.theverge.com/ai-artificial-intelligence/1009337/satya-nadella-says-we-should-assume-all-ai-models-are-compromised",
+    "https://www.theverge.com/ai-artificial-intelligence/1008484/learning-local-ai-hermes-qwen-model-mac-studio-testing-diary-progress",
+    "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
+    "https://www.theverge.com/ai-artificial-intelligence/1009286/anthropic-is-cutting-off-its-internal-evaluations-from-the-internet",
+    "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
+    "https://www.theverge.com/news/1009465/microsoft-maia-300-chip-improvements-rollout",
+    "https://www.theverge.com/ai-artificial-intelligence/1012510/openai-chatgpt-google-chrome-tabs",
+    "https://techcrunch.com/2026/10/16/india-becomes-the-latest-country-to-report-rogue-ai-agent-activity/",
+    "https://www.theverge.com/ai-artificial-intelligence/1013195/ai-agents-blocked-web",
+    "https://www.theverge.com/ai-artificial-intelligence/1013541/a-woman-was-arrested-in-philly-for-blocking-a-delivery-robot",
+    "https://www.theverge.com/science/1013954/fossil-fuel-power-infrastructure-data-centers-report",
+    "https://www.theverge.com/tech/1014999/google-gemini-ai-cars-android-auto",
+    "https://techcrunch.com/2026/10/22/left-alone-with-nothing-to-do-ai-agents-started-playing/",
+    "https://www.theverge.com/ai-artificial-intelligence/1018205/blue-planet-iii-authentic-organic-ai",
+    "https://techcrunch.com/2026/10/26/cohere-says-alibabas-qwen-model-tried-to-send-a-file-to-beijing/",
+    "https://techcrunch.com/2026/10/27/vcs-will-make-billions-on-anthropics-ipo-but-amazon-is-set-to-make-much-much-more/",
+    "https://www.theverge.com/ai-artificial-intelligence/1021644/adam-mosseri-instagram-ai-negativity",
+    "https://www.theverge.com/ai-artificial-intelligence/1022519/google-gemini-file-editing-documents-pdfs",
+    "https://www.theverge.com/ai-artificial-intelligence/1023820/sam-altman-ram-shortage-cloud-servers",
+    "https://www.theverge.com/tech/1023974/apple-intelligence-china-ios-27-3",
+    "https://techcrunch.com/2026/11/01/openai-might-rebrand-its-data-centers-as-ai-compute-campuses/",
+    "https://www.theverge.com/ai-artificial-intelligence/1029380/openai-1-25-trillion-investment-valuation",
+    "https://www.theverge.com/ai-artificial-intelligence/1029483/nvidia-ai-chips-china-blacklist-government",
+    "https://www.theverge.com/ai-artificial-intelligence/1029562/nvidia-investigating-jensen-huang-relationship-chinese-spy",
+    "https://techcrunch.com/2026/11/10/openai-acquires-odessia-travel-startup-created-by-sonder-founder/",
+    "https://www.theverge.com/ai-artificial-intelligence/1030422/nvidia-jensen-huang-ai-china-alice-huang",
+    "https://www.theverge.com/podcast/1032866/jensen-huang-nvidia-china-trump-vergecast",
+    "https://openai.com/index/introducing-chatgpt-wallet",
+    "https://www.theverge.com/ai-artificial-intelligence/1037459/anthropic-ipo-safe-ai-reputation-power-structure"
+  ],
+  "drafts": {
+    "96ffe460d516": {
+      "id": "96ffe460d516",
+      "status": "pending",
+      "created_at": "2026-11-15T14:35:12.897114+00:00",
+      "revision": 1,
+      "articles": [
+        {
+          "title": "An overview of Jensen Huang’s messy days",
+          "summary": "This is The Stepback, a weekly newsletter breaking down one essential story from the tech world. For more on Jensen Huang's resignation and the fallout from Nvidia's leadership crisis, follow Terrence O'Brien. The Stepback arrives in our subscribers' inboxes on Sunday at 8AM ET. Opt in for The Stepback here. How it started On October […]",
+          "author": "Terrence O’Brien",
+          "url": "https://www.theverge.com/column/1033943/jensen-huang-nvidia-china-spying-scandal-resignation",
+          "source": "AI | The Verge",
+          "published": "2026-11-15T13:00:00+00:00"
+        },
+        {
+          "title": "Where was Nvidia’s security team?",
+          "summary": "Nvidia’s security chief quietly left in August, and now that CEO Jensen Huang has stepped down over his relationships, including one with an executive at a company suspected of funneling chips to China, a former intelligence officer says it’s the kind of leak that runs everyday conversations, which most corporate security teams are poorly equipped to catch.",
+          "author": "Connie Loizos",
+          "url": "https://techcrunch.com/2026/11/14/where-was-nvidias-security-team/",
+          "source": "AI News & Artificial Intelligence | TechCrunch",
+          "published": "2026-11-15T00:08:07+00:00"
+        },
+        {
+          "title": "Elon Musk, other tech execs sign petition calling on Nvidia to reinstate Jensen Huang",
+          "summary": "The petition had attracted more than 115,000 signatures as of Saturday afternoon.",
+          "author": "Anthony Ha",
+          "url": "https://techcrunch.com/2026/11/14/elon-musk-other-tech-execs-sign-petition-calling-on-nvidia-to-reinstate-jensen-huang/",
+          "source": "AI News & Artificial Intelligence | TechCrunch",
+          "published": "2026-11-14T21:41:22+00:00"
+        },
+        {
+          "title": "The OpenAI board member who fired Sam Altman says we still can’t trust AI CEOs",
+          "summary": "Today, I’m talking with Helen Toner, the executive director of the Center for Security and Emerging Technology at Georgetown University. This episode is part two of our series on AI in real life. Helen is a well-known figure in the AI safety and policy community, though she is perhaps best known for having served on […]",
+          "author": "Nilay Patel",
+          "url": "https://www.theverge.com/podcast/1032907/helen-toner-openai-cset-ai-safety-policy-interview",
+          "source": "AI | The Verge",
+          "published": "2026-11-14T15:00:00+00:00"
+        },
+        {
+          "title": "Introducing ChatGPT Wallet",
+          "summary": "Introducing ChatGPT Wallet, a secure way for agents in ChatGPT Work, Codex, and dots to complete purchases with user approval and existing card protections.",
+          "author": "OpenAI News",
+          "url": "https://openai.com/index/introducing-chatgpt-wallet",
+          "source": "OpenAI News",
+          "published": "2026-11-13T15:00:00+00:00"
+        }
+      ],
+      "article": {
+        "title": "Introducing ChatGPT Wallet",
+        "summary": "Introducing ChatGPT Wallet, a secure way for agents in ChatGPT Work, Codex, and dots to complete purchases with user approval and existing card protections.",
+        "author": "OpenAI News",
+        "url": "https://openai.com/index/introducing-chatgpt-wallet",
+        "source": "OpenAI News",
+        "published": "2026-11-13T15:00:00+00:00"
+      },
+      "post": {
+        "post_type": "single",
+        "caption": "OpenAI is giving autonomous agents the ability to buy things. The company has announced ChatGPT Wallet, a secure checkout capability designed for agents across ChatGPT Work, Codex, and dots. Transactions are built around user safety: purchases will require explicit user approval and rely on existing card protections. As AI systems shift from simply generating answers to handling real-world workflows, payment integrations mark a key step toward practical autonomous assistants. #AI #OpenAI #ChatGPT #TechNews #Fintech #ArtificialIntelligence 📰 Source: OpenAI News (by OpenAI News) - https://openai.com/index/introducing-chatgpt-wallet",
+        "headline": "OpenAI Unveils ChatGPT Wallet For Agent Purchases",
+        "topic": "OPENAI · CHATGPT WALLET",
+        "slides_text": [],
+        "slides_body": [],
+        "image_prompt": "A sleek modern smartphone resting on a dark wooden desk beside a physical payment card, illuminated by soft blue ambient glow from a laptop display in a quiet contemporary office space, realistic photography.",
+        "slide_image_prompts": [],
+        "photo_queries": [
+          "contactless mobile payment"
+        ],
+        "source_index": 5
+      },
+      "image_files": [
+        "slide_1.v1.jpg"
+      ],
+      "slots": [
+        {
+          "query": "contactless mobile payment",
+          "ai_prompt": "A sleek modern smartphone resting on a dark wooden desk beside a physical payment card, illuminated by soft blue ambient glow from a laptop display in a quiet contemporary office space, realistic photography.",
+          "candidates": [
+            {
+              "id": "oRKF_ZBJYGM",
+              "alt": "A person holding a smartphone near a contactless payment terminal in a kitchen",
+              "color": "#262626",
+              "w": 4480,
+              "h": 6720,
+              "thumb": "https://images.unsplash.com/photo-1556742521-9713bf272865?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8MXx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1556742521-9713bf272865?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8MXx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "Nathan Dumlao",
+              "author_url": "https://unsplash.com/@nate_dumlao",
+              "page_url": "https://unsplash.com/photos/smartphone-contactless-payment-in-kitchen-oRKF_ZBJYGM",
+              "download_location": "https://api.unsplash.com/photos/oRKF_ZBJYGM/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8MXx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            },
+            {
+              "id": "QiPe0UpC0_U",
+              "alt": "two person's hands holding turned-on phones",
+              "color": "#c0c0c0",
+              "w": 4000,
+              "h": 6000,
+              "thumb": "https://images.unsplash.com/photo-1571867424488-4565932edb41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8Mnx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1571867424488-4565932edb41?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8Mnx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "David Dvořáček",
+              "author_url": "https://unsplash.com/@dafidvor",
+              "page_url": "https://unsplash.com/photos/two-persons-hands-holding-turned-on-phones-QiPe0UpC0_U",
+              "download_location": "https://api.unsplash.com/photos/QiPe0UpC0_U/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8Mnx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            },
+            {
+              "id": "tgquMvhNLc4",
+              "alt": "A person inserting a credit card into a payment terminal held by another person",
+              "color": "#d9c0c0",
+              "w": 2400,
+              "h": 3000,
+              "thumb": "https://images.unsplash.com/photo-1556742031-c6961e8560b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8M3x8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1556742031-c6961e8560b0?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8M3x8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "Clay Banks",
+              "author_url": "https://unsplash.com/@claybanks",
+              "page_url": "https://unsplash.com/photos/person-paying-with-credit-card-tgquMvhNLc4",
+              "download_location": "https://api.unsplash.com/photos/tgquMvhNLc4/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8M3x8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            },
+            {
+              "id": "XBi0c3PBR14",
+              "alt": "A person is holding a credit card in their hand",
+              "color": "#737359",
+              "w": 4000,
+              "h": 6000,
+              "thumb": "https://images.unsplash.com/photo-1726137569807-c0ce211ccbec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8NHx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1726137569807-c0ce211ccbec?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8NHx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "SumUp",
+              "author_url": "https://unsplash.com/@sumup",
+              "page_url": "https://unsplash.com/photos/a-person-is-holding-a-credit-card-in-their-hand-XBi0c3PBR14",
+              "download_location": "https://api.unsplash.com/photos/XBi0c3PBR14/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8NHx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            },
+            {
+              "id": "2gExZO8zK58",
+              "alt": "woman holding white box",
+              "color": "#d9d9d9",
+              "w": 2400,
+              "h": 3600,
+              "thumb": "https://images.unsplash.com/photo-1556741564-a0e2cc7e2b79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8NXx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1556741564-a0e2cc7e2b79?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8NXx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "Christiann Koepke",
+              "author_url": "https://unsplash.com/@christiannkoepke",
+              "page_url": "https://unsplash.com/photos/woman-holding-white-box-2gExZO8zK58",
+              "download_location": "https://api.unsplash.com/photos/2gExZO8zK58/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8NXx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            },
+            {
+              "id": "kmakbD6Nlhc",
+              "alt": "A person holding a credit card in their hand",
+              "color": "#d9d9d9",
+              "w": 4000,
+              "h": 6000,
+              "thumb": "https://images.unsplash.com/photo-1726057403601-c099f03e7b3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8Nnx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1726057403601-c099f03e7b3e?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8Nnx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "SumUp",
+              "author_url": "https://unsplash.com/@sumup",
+              "page_url": "https://unsplash.com/photos/a-person-holding-a-credit-card-in-their-hand-kmakbD6Nlhc",
+              "download_location": "https://api.unsplash.com/photos/kmakbD6Nlhc/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8Nnx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            },
+            {
+              "id": "0-UCBYHTp2o",
+              "alt": "A man sitting at a table looking at his cell phone",
+              "color": "#c0d9f3",
+              "w": 4000,
+              "h": 6000,
+              "thumb": "https://images.unsplash.com/photo-1739989934321-fadbccc56265?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8N3x8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1739989934321-fadbccc56265?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8N3x8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "SumUp",
+              "author_url": "https://unsplash.com/@sumup",
+              "page_url": "https://unsplash.com/photos/a-man-sitting-at-a-table-looking-at-his-cell-phone-0-UCBYHTp2o",
+              "download_location": "https://api.unsplash.com/photos/0-UCBYHTp2o/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8N3x8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            },
+            {
+              "id": "fXgTOOlz0YM",
+              "alt": "A person holding a blue card in front of a computer",
+              "color": "#595959",
+              "w": 4000,
+              "h": 6000,
+              "thumb": "https://images.unsplash.com/photo-1726137569788-bb06b4b5d0bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8OHx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0&q=80&w=400",
+              "raw": "https://images.unsplash.com/photo-1726137569788-bb06b4b5d0bb?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8OHx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA&ixlib=rb-4.1.0",
+              "author": "SumUp",
+              "author_url": "https://unsplash.com/@sumup",
+              "page_url": "https://unsplash.com/photos/a-person-holding-a-blue-card-in-front-of-a-computer-fXgTOOlz0YM",
+              "download_location": "https://api.unsplash.com/photos/fXgTOOlz0YM/download?ixid=M3wxMDk5NDIwfDB8MXxzZWFyY2h8OHx8Y29udGFjdGxlc3MlMjBtb2JpbGUlMjBwYXltZW50fGVufDF8MXx8fDE3OTQ3NTMwNjN8MA"
+            }
+          ],
+          "mode": "ai",
+          "choice": null,
+          "grade": "none",
+          "edit_prompt": "",
+          "by": "auto",
+          "rendered": "ai",
+          "used_id": ""
+        }
+      ],
+      "img_ver": 1,
+      "kb_msg": 380
+    }
+  },
+  "awaiting_feedback": null
+}
